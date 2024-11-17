@@ -2,14 +2,14 @@
 
 WITH potraviny AS (
     SELECT 
-        AVG(potraviny_value) AS prumerna_cena, 
-        potraviny_year AS rok
+        AVG(potraviny_hodnota) AS prumerna_cena, 
+        potraviny_rok AS rok
     FROM 
         t_petr_novotny_project_sql_primary_final
     WHERE 
         values_type = 'potraviny'
     GROUP BY
-        potraviny_year
+        potraviny_rok
 ),
 rust_potravin AS (
     SELECT 
@@ -30,15 +30,15 @@ hdp_rust AS (
 ),
 prumerne_mzdy AS (
     SELECT 
-        mzdy_year AS rok,
-        AVG(mzdy_value) AS prumerna_mzda
+        mzdy_rok AS rok,
+        AVG(mzdy_hodnota) AS prumerna_mzda
     FROM 
         t_petr_novotny_project_sql_primary_final
     WHERE 
         values_type = 'mzdy'
-        AND mzdy_industry_name = 'republikový průměr'
+        AND mzdy_odvetvi_jmeno = 'republikový průměr'
     GROUP BY 
-        mzdy_year
+        mzdy_rok
 ),
 rust_mezd AS (
     SELECT 
