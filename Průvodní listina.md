@@ -41,7 +41,7 @@ Projekt je postaven na přípravě SQL dotazů pro vytvoření tabulek, ze kter�
 - Dotaz analyzuje meziroční změny mezd ve všech odvětvích a identifikuje, zda mzdy klesají v některých odvětvích.
 
 ### Dotaz 2: Kupní síla
-- Dotaz vypočítává kupní sílu průměrné mzdy pro mléko a chleba.
+- Dotaz vypočítává kupní sílu průměrné mzdy pro mléko a chleba za daná období.
 
 ### Dotaz 3: Stabilita růstu cen potravin
 - Dotaz identifikuje průměrný meziroční růst cen jednotlivých kategorií potravin.
@@ -53,4 +53,8 @@ Projekt je postaven na přípravě SQL dotazů pro vytvoření tabulek, ze kter�
 - Dotaz analyzuje vliv růstu HDP na růst mezd a cen potravin.
 
 ## Výstupní data
-Výstupní data byla upravena tak, aby obsahovala pouze roky, pro které je možné odpovědět na výzkumné otázky, jelikož některá časová období postrádají potřebné informace. <br> Datová sada mezd zahrnuje období 2000–2021, zatímco datová sada cen potravin pokrývá roky 2006–2018.
+- Data byla očištěna o roky, kdy nejsou dostupné informace pro mzdy nebo ceny potravin.
+- **Dostupné období:**
+  - Mzdy: 2000–2021.
+  - Ceny potravin: 2006–2018.
+- Transformace dat probíhala pouze na úrovni výsledných tabulek.
