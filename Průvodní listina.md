@@ -56,5 +56,7 @@ Projekt je postaven na přípravě SQL dotazů pro vytvoření tabulek, ze kter�
 - Data byla očištěna o roky, kdy nejsou dostupné informace pro mzdy nebo ceny potravin.
 - **Dostupné období:**
   - Mzdy: 2000–2021.
-  - Ceny potravin: 2006–2018.
+  - Ceny potravin: 2006–2018. 
 - Transformace dat probíhala pouze na úrovni výsledných tabulek.
+
+PS.
