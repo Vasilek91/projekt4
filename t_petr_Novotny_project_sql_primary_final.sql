@@ -1,52 +1,61 @@
-create or replace table t_petr_Novotny_project_sql_primary_final as 
-
-select
-'mzdy' as values_type,
-round(avg(cp.value),2) as mzdy_value,
-cpvt.name as mzdy_type_code_name,
-cpu.name as mzdy_unit_name,
-cpc.name as mzdy_calc_name,
-case
-	when cpib.name is null then 'republikový průměr'
-	else cpib.name
-	end as mzdy_industry_name,
-cp.payroll_year as mzdy_year,
-null as potraviny_value,
-null as potraviny_name,
-null as potraviny_price_value,
-null as potraviny_unit,
-null as potraviny_year
-from czechia_payroll cp 
-left join czechia_payroll_calculation cpc on cpc.code = cp.calculation_code 
-left join czechia_payroll_industry_branch cpib on cpib.code = cp.industry_branch_code 
-left join czechia_payroll_unit cpu on cpu.code = cp.unit_code 
-left join czechia_payroll_value_type cpvt on cpvt.code = cp.value_type_code
-where 
-	cp.value_type_code = 5958 
-	and cp.calculation_code = 200 
-	and cp.payroll_year between (select year(min(cpri.date_to)) from czechia_price cpri) and (select year(max(cpri2.date_to)) from czechia_price cpri2)
-group by
-	cp.payroll_year,
-	cp.industry_branch_code
-union all
-select 
-'potraviny' as values_type,
-null as mzdy_value,
-null as mzdy_type_code_name,
-null as mzdy_unit_name,
-null as mzdy_calc_name,
-null as mzdy_year,
-null as mzdy_year,
-round(avg(cppr.value),2) as 'potraviny_value',
-cpc.name 'potraviny_name',
-cpc.price_value 'potraviny_price_value',
-cpc.price_unit 'potraviny_unit',
-year(cppr.date_to) as 'potraviny_year'
-from czechia_price cppr
-left join czechia_price_category cpc on cpc.code = cppr.category_code 
-left join czechia_region cr on cr.code = cppr.region_code
-where 
-	cppr.region_code is null
-group by
-	potraviny_year,
-	cppr.category_code
+CREATE OR REPLACE TABLE t_petr_novotny_project_sql_primary_final AS
+SELECT
+    'mzdy' AS typ_hodnoty,
+    ROUND(AVG(cp.value), 2) AS prumerna_mzda,
+    cpvt.name AS typ_kodu_mzdy,
+    cpu.name AS jednotka_mzdy,
+    cpc.name AS kalkulace_mzdy,
+    CASE
+        WHEN cpib.name IS NULL THEN 'republikový průměr'
+        ELSE cpib.name
+    END AS odvetvi_mzdy,
+    cp.payroll_year AS rok_mzdy,
+    NULL AS hodnota_potravin,
+    NULL AS nazev_potraviny,
+    NULL AS cena_potraviny,
+    NULL AS jednotka_potraviny,
+    NULL AS rok_potraviny
+FROM 
+    czechia_payroll cp 
+LEFT JOIN 
+    czechia_payroll_calculation cpc ON cpc.code = cp.calculation_code 
+LEFT JOIN 
+    czechia_payroll_industry_branch cpib ON cpib.code = cp.industry_branch_code 
+LEFT JOIN 
+    czechia_payroll_unit cpu ON cpu.code = cp.unit_code 
+LEFT JOIN 
+    czechia_payroll_value_type cpvt ON cpvt.code = cp.value_type_code
+WHERE 
+    cp.value_type_code = 5958 
+    AND cp.calculation_code = 200 
+    AND cp.payroll_year BETWEEN 
+        (SELECT YEAR(MIN(cpri.date_to)) FROM czechia_price cpri) AND 
+        (SELECT YEAR(MAX(cpri2.date_to)) FROM czechia_price cpri2)
+GROUP BY
+    cp.payroll_year,
+    cp.industry_branch_code
+UNION ALL
+SELECT 
+    'potraviny' AS typ_hodnoty,
+    NULL AS prumerna_mzda,
+    NULL AS typ_kodu_mzdy,
+    NULL AS jednotka_mzdy,
+    NULL AS kalkulace_mzdy,
+    NULL AS odvetvi_mzdy,
+    NULL AS rok_mzdy,
+    ROUND(AVG(cppr.value), 2) AS hodnota_potravin,
+    cpc.name AS nazev_potraviny,
+    cpc.price_value AS cena_potraviny,
+    cpc.price_unit AS jednotka_potraviny,
+    YEAR(cppr.date_to) AS rok_potraviny
+FROM 
+    czechia_price cppr
+LEFT JOIN 
+    czechia_price_category cpc ON cpc.code = cppr.category_code 
+LEFT JOIN 
+    czechia_region cr ON cr.code = cppr.region_code
+WHERE 
+    cppr.region_code IS NULL
+GROUP BY
+    rok_potraviny,
+    cppr.category_code;
