@@ -2,14 +2,14 @@
 
 WITH potraviny AS (
     SELECT 
-        AVG(potraviny_hodnota) AS prumerna_cena, 
-        potraviny_rok AS rok
+        AVG(hodnota_potravin) AS prumerna_cena, 
+        rok_potraviny AS rok
     FROM 
         t_petr_novotny_project_sql_primary_final
     WHERE 
-        values_type = 'potraviny'
+        typ_hodnoty = 'potraviny'
     GROUP BY
-        potraviny_rok
+        rok_potraviny
 ),
 rust_potravin AS (
     SELECT 
@@ -20,25 +20,25 @@ rust_potravin AS (
 ),
 hdp_rust AS (
     SELECT 
-        year AS rok,
-        gdp AS hdp_hodnota,
-        ((gdp - LAG(gdp) OVER (ORDER BY year)) / LAG(gdp) OVER (ORDER BY year)) * 100 AS hdp_rust
+        rok,
+        hdp AS hdp_hodnota,
+        ((hdp - LAG(hdp) OVER (ORDER BY rok)) / LAG(hdp) OVER (ORDER BY rok)) * 100 AS hdp_rust
     FROM 
-        economies
+        t_petr_novotny_project_sql_secondary_final
     WHERE 
-        country = 'Czech Republic'
+        nazev_zeme = 'Czech Republic'
 ),
 prumerne_mzdy AS (
     SELECT 
-        mzdy_rok AS rok,
-        AVG(mzdy_hodnota) AS prumerna_mzda
+        rok_mzdy AS rok,
+        AVG(prumerna_mzda) AS prumerna_mzda
     FROM 
         t_petr_novotny_project_sql_primary_final
     WHERE 
-        values_type = 'mzdy'
-        AND mzdy_odvetvi_jmeno = 'republikový průměr'
+        typ_hodnoty = 'mzdy'
+        AND odvetvi_mzdy = 'republikový průměr'
     GROUP BY 
-        mzdy_rok
+        rok_mzdy
 ),
 rust_mezd AS (
     SELECT 
@@ -63,4 +63,3 @@ WHERE
     AND rm.rust_mezd IS NOT NULL
 ORDER BY 
     rok;
-
