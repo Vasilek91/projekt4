@@ -14,7 +14,7 @@ Projekt je postaven na přípravě SQL dotazů pro vytvoření tabulek, ze kter�
 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo násdujícím roce výraznějším růstem?
 
 ## Vytvořené tabulky
-**Název:** `t_petr_novotny_project_sql_primary_final`
+**Název:** [`t_petr_novotny_project_sql_primary_final`](./t_petr_novotny_project_sql_primary_final.sql)
 
 | Sloupec             | Popis                          |
 |---------------------|-------------------------------|
@@ -27,7 +27,7 @@ Projekt je postaven na přípravě SQL dotazů pro vytvoření tabulek, ze kter�
 | `rok_potraviny`     | Rok ceny potraviny.         |
 
 ### Sekundární tabulka
-**Název:** `t_petr_novotny_project_sql_secondary_final`
+**Název:** [`t_petr_novotny_project_sql_secondary_final`](./t_petr_novotny_project_sql_secondary_final.sql)
 
 | Sloupec       | Popis                     |
 |---------------|---------------------------|
