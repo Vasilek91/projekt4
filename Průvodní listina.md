@@ -53,4 +53,5 @@ Projekt je postaven na přípravě SQL dotazů pro vytvoření tabulek, ze kter�
 - Dotaz analyzuje vliv růstu HDP na růst mezd a cen potravin.
 
 ## Výstupní data
-Výstupní data byla očištěna o roky ve kterých nelze provést odpověď na výzkumné otázky z důvodu chybějícíh dat pro daná časová období.
+Výstupní data byla očištěna o roky ve kterých nelze provést odpověď na výzkumné otázky z důvodu chybějícíh dat pro daná časová období. <br>
+Datová sada výše mezd protíná období let 2000 - 2021, zatímco datová sada cen potravin protíná roky 2006 - 2018.
