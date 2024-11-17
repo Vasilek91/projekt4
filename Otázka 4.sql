@@ -3,48 +3,48 @@
 with
 lonske_ceny as (
 select 
-	avg(potraviny_value) as prumerna_cena, 
-	potraviny_year
+	avg(potraviny_hodnota) as prumerna_cena, 
+	potraviny_rok
 from t_petr_novotny_project_sql_primary_final
 where 
-	values_type like 'potraviny'
+	hodnoty_typ like 'potraviny'
 group by
-potraviny_year
+potraviny_rok
 ),
 rust_potravin as(
 select
-lc.potraviny_year,
+lc.potraviny_rok,
 ((lc.prumerna_cena - lc1.prumerna_cena) / lc1.prumerna_cena) * 100 AS vyvoj_potravin
 from lonske_ceny as lc
-left join lonske_ceny as lc1 on lc1.potraviny_year+1 = lc.potraviny_year
+left join lonske_ceny as lc1 on lc1.potraviny_rok+1 = lc.potraviny_rok
 where
 lc1.prumerna_cena is not null
 ),
 lonske_mzdy as (
 select 
-	mzdy_value, 
-	mzdy_year
+	mzdy_hodnota, 
+	mzdy_rok
 from t_petr_novotny_project_sql_primary_final
 where 
-	values_type like 'mzdy'
-	and mzdy_industry_name like 'republikový průměr'
+	hodnoty_typ like 'mzdy'
+	and mzdy_odvetvi_jmeno like 'republikový průměr'
 ),
 rust_mezd as (
 select
-lm.mzdy_year,
-((lm.mzdy_value - lm1.mzdy_value) / lm1.mzdy_value) * 100 AS vyvoj_mezd
+lm.mzdy_rok,
+((lm.mzdy_hodnota - lm1.mzdy_hodnota) / lm1.mzdy_hodnota) * 100 AS vyvoj_mezd
 from lonske_mzdy as lm
-left join lonske_mzdy as lm1 on lm1.mzdy_year+1 = lm.mzdy_year
-where lm1.mzdy_value is not null
+left join lonske_mzdy as lm1 on lm1.mzdy_rok+1 = lm.mzdy_rok
+where lm1.mzdy_hodnota is not null
 )
 select 
-rp.potraviny_year as rok, 
+rp.potraviny_rok as rok, 
 rp.vyvoj_potravin, 
 rm.vyvoj_mezd,
 (rp.vyvoj_potravin - rm.vyvoj_mezd) AS rozdil 
 from rust_potravin as rp
-left join rust_mezd AS rm ON rp.potraviny_year = rm.mzdy_year
-order by rp.potraviny_year
+left join rust_mezd AS rm ON rp.potraviny_rok = rm.mzdy_rok
+order by rp.potraviny_rok
 
 
 
