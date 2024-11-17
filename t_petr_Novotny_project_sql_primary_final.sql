@@ -32,8 +32,11 @@ WHERE
         (SELECT YEAR(MIN(cpri.date_to)) FROM czechia_price cpri) AND 
         (SELECT YEAR(MAX(cpri2.date_to)) FROM czechia_price cpri2)
 GROUP BY
-    cp.payroll_year,
-    cp.industry_branch_code
+    cpvt.name,
+    cpu.name,
+    cpc.name,
+    cpib.name,
+    cp.payroll_year;
 UNION ALL
 SELECT 
     'potraviny' AS typ_hodnoty,
@@ -45,7 +48,7 @@ SELECT
     NULL AS rok_mzdy,
     ROUND(AVG(cppr.value), 2) AS hodnota_potravin,
     cpc.name AS nazev_potraviny,
-    cpc.price_value AS cena_potraviny,
+    NULL AS cena_potraviny,
     cpc.price_unit AS jednotka_potraviny,
     YEAR(cppr.date_to) AS rok_potraviny
 FROM 
@@ -57,5 +60,6 @@ LEFT JOIN
 WHERE 
     cppr.region_code IS NULL
 GROUP BY
-    rok_potraviny,
-    cppr.category_code;
+    cpc.name,
+    cpc.price_unit,
+    YEAR(cppr.date_to);
