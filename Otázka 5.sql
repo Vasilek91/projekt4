@@ -1,65 +1,65 @@
-CREATE or replace TABLE t_petr_novotny_project_sql_primary_final AS
-SELECT
-    'mzdy' AS typ_hodnoty,
-    ROUND(AVG(cp.value), 2) AS prumerna_mzda,
-    cpvt.name AS typ_kodu_mzdy,
-    cpu.name AS jednotka_mzdy,
-    cpc.name AS kalkulace_mzdy,
-    CASE
-        WHEN cpib.name IS NULL THEN 'republikový průměr'
-        ELSE cpib.name
-    END AS odvetvi_mzdy,
-    cp.payroll_year AS rok_mzdy,
-    NULL AS hodnota_potravin,
-    NULL AS nazev_potraviny,
-    NULL AS cena_potraviny,
-    NULL AS jednotka_potraviny,
-    NULL AS rok_potraviny
-FROM 
-    czechia_payroll cp 
-LEFT JOIN 
-    czechia_payroll_calculation cpc ON cpc.code = cp.calculation_code 
-LEFT JOIN 
-    czechia_payroll_industry_branch cpib ON cpib.code = cp.industry_branch_code 
-LEFT JOIN 
-    czechia_payroll_unit cpu ON cpu.code = cp.unit_code 
-LEFT JOIN 
-    czechia_payroll_value_type cpvt ON cpvt.code = cp.value_type_code
-WHERE 
-    cp.value_type_code = 5958 
-    AND cp.calculation_code = 200 
-   -- AND cp.payroll_year BETWEEN 
-     --   (SELECT YEAR(MIN(cpri.date_to)) FROM czechia_price cpri) AND 
-      --  (SELECT YEAR(MAX(cpri2.date_to)) FROM czechia_price cpri2)
-GROUP BY
-    cpvt.name,
-    cpu.name,
-    cpc.name,
-    cpib.name,
-    cp.payroll_year
-UNION ALL
+# 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo násdujícím roce výraznějším růstem?
+
+WITH potraviny AS (
+    SELECT 
+        AVG(hodnota_potravin) AS prumerna_cena, 
+        rok_potraviny AS rok
+    FROM 
+        t_petr_novotny_project_sql_primary_final
+    WHERE 
+        typ_hodnoty = 'potraviny'
+    GROUP BY
+        rok_potraviny
+),
+rust_potravin AS (
+    SELECT 
+        p.rok,
+        ((p.prumerna_cena - LAG(p.prumerna_cena) OVER (ORDER BY p.rok)) / LAG(p.prumerna_cena) OVER (ORDER BY p.rok)) * 100 AS rust_cen_potravin
+    FROM 
+        potraviny AS p
+),
+hdp_rust AS (
+    SELECT 
+        rok,
+        hdp AS hdp_hodnota,
+        ((hdp - LAG(hdp) OVER (ORDER BY rok)) / LAG(hdp) OVER (ORDER BY rok)) * 100 AS hdp_rust
+    FROM 
+        t_petr_novotny_project_sql_secondary_final
+    WHERE 
+        nazev_zeme = 'Czech Republic'
+),
+prumerne_mzdy AS (
+    SELECT 
+        rok_mzdy AS rok,
+        AVG(prumerna_mzda) AS prumerna_mzda
+    FROM 
+        t_petr_novotny_project_sql_primary_final
+    WHERE 
+        typ_hodnoty = 'mzdy'
+        AND odvetvi_mzdy = 'republikový průměr'
+    GROUP BY 
+        rok_mzdy
+),
+rust_mezd AS (
+    SELECT 
+        pm.rok,
+        ((pm.prumerna_mzda - LAG(pm.prumerna_mzda) OVER (ORDER BY pm.rok)) / LAG(pm.prumerna_mzda) OVER (ORDER BY pm.rok)) * 100 AS rust_mezd
+    FROM 
+        prumerne_mzdy AS pm
+)
 SELECT 
-    'potraviny' AS typ_hodnoty,
-    NULL AS prumerna_mzda,
-    NULL AS typ_kodu_mzdy,
-    NULL AS jednotka_mzdy,
-    NULL AS kalkulace_mzdy,
-    NULL AS odvetvi_mzdy,
-    NULL AS rok_mzdy,
-    ROUND(AVG(cppr.value), 2) AS hodnota_potravin,
-    cpc.name AS nazev_potraviny,
-    cpc.price_value AS merna_jednotka_potraviny,
-    cpc.price_unit AS jednotka_potraviny,
-    YEAR(cppr.date_to) AS rok_potraviny
+    h.rok AS rok,
+    h.hdp_rust AS hdp_rust,
+    rp.rust_cen_potravin AS rust_cen_potravin,
+    rm.rust_mezd AS rust_mezd
 FROM 
-    czechia_price cppr
+    hdp_rust AS h
 LEFT JOIN 
-    czechia_price_category cpc ON cpc.code = cppr.category_code 
+    rust_potravin AS rp ON rp.rok = h.rok
 LEFT JOIN 
-    czechia_region cr ON cr.code = cppr.region_code
+    rust_mezd AS rm ON rm.rok = h.rok
 WHERE 
-    cppr.region_code IS NULL
-GROUP BY
-    cpc.name,
-    cpc.price_unit,
-    YEAR(cppr.date_to);
+    rp.rust_cen_potravin IS NOT NULL 
+    AND rm.rust_mezd IS NOT NULL
+ORDER BY 
+    rok;
