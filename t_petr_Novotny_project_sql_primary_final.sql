@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE t_petr_novotny_project_sql_primary_final AS
+CREATE or replace TABLE t_petr_novotny_project_sql_primary_final AS
 SELECT
     'mzdy' AS typ_hodnoty,
     ROUND(AVG(cp.value), 2) AS prumerna_mzda,
@@ -28,15 +28,15 @@ LEFT JOIN
 WHERE 
     cp.value_type_code = 5958 
     AND cp.calculation_code = 200 
-    AND cp.payroll_year BETWEEN 
-        (SELECT YEAR(MIN(cpri.date_to)) FROM czechia_price cpri) AND 
-        (SELECT YEAR(MAX(cpri2.date_to)) FROM czechia_price cpri2)
+   -- AND cp.payroll_year BETWEEN 
+     --   (SELECT YEAR(MIN(cpri.date_to)) FROM czechia_price cpri) AND 
+      --  (SELECT YEAR(MAX(cpri2.date_to)) FROM czechia_price cpri2)
 GROUP BY
     cpvt.name,
     cpu.name,
     cpc.name,
     cpib.name,
-    cp.payroll_year;
+    cp.payroll_year
 UNION ALL
 SELECT 
     'potraviny' AS typ_hodnoty,
@@ -48,7 +48,7 @@ SELECT
     NULL AS rok_mzdy,
     ROUND(AVG(cppr.value), 2) AS hodnota_potravin,
     cpc.name AS nazev_potraviny,
-    NULL AS cena_potraviny,
+    cpc.price_value AS merna_jednotka_potraviny,
     cpc.price_unit AS jednotka_potraviny,
     YEAR(cppr.date_to) AS rok_potraviny
 FROM 
