@@ -1,32 +1,27 @@
-# 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo násdujícím roce výraznějším růstem?
+# 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 
-WITH potraviny AS (
+WITH
+prumerne_ceny AS (
     SELECT 
-        AVG(hodnota_potravin) AS prumerna_cena, 
-        rok_potraviny AS rok
+        rok_potraviny AS rok,
+        AVG(hodnota_potravin) AS prumerna_cena
     FROM 
         t_petr_novotny_project_sql_primary_final
     WHERE 
         typ_hodnoty = 'potraviny'
-    GROUP BY
+    GROUP BY 
         rok_potraviny
 ),
-rust_potravin AS (
+vyvoj_potravin AS (
     SELECT 
-        p.rok,
-        ((p.prumerna_cena - LAG(p.prumerna_cena) OVER (ORDER BY p.rok)) / LAG(p.prumerna_cena) OVER (ORDER BY p.rok)) * 100 AS rust_cen_potravin
+        pc.rok,
+        ((pc.prumerna_cena - pc1.prumerna_cena) / pc1.prumerna_cena) * 100 AS vyvoj_potravin
     FROM 
-        potraviny AS p
-),
-hdp_rust AS (
-    SELECT 
-        rok,
-        hdp AS hdp_hodnota,
-        ((hdp - LAG(hdp) OVER (ORDER BY rok)) / LAG(hdp) OVER (ORDER BY rok)) * 100 AS hdp_rust
-    FROM 
-        t_petr_novotny_project_sql_secondary_final
+        prumerne_ceny pc
+    LEFT JOIN 
+        prumerne_ceny pc1 ON pc1.rok + 1 = pc.rok
     WHERE 
-        nazev_zeme = 'Czech Republic'
+        pc1.prumerna_cena IS NOT NULL
 ),
 prumerne_mzdy AS (
     SELECT 
@@ -40,26 +35,29 @@ prumerne_mzdy AS (
     GROUP BY 
         rok_mzdy
 ),
-rust_mezd AS (
+vyvoj_mezd AS (
     SELECT 
         pm.rok,
-        ((pm.prumerna_mzda - LAG(pm.prumerna_mzda) OVER (ORDER BY pm.rok)) / LAG(pm.prumerna_mzda) OVER (ORDER BY pm.rok)) * 100 AS rust_mezd
+        ((pm.prumerna_mzda - pm1.prumerna_mzda) / pm1.prumerna_mzda) * 100 AS vyvoj_mezd
     FROM 
-        prumerne_mzdy AS pm
+        prumerne_mzdy pm
+    LEFT JOIN 
+        prumerne_mzdy pm1 ON pm1.rok + 1 = pm.rok
+    WHERE 
+        pm1.prumerna_mzda IS NOT NULL
 )
 SELECT 
-    h.rok AS rok,
-    h.hdp_rust AS hdp_rust,
-    rp.rust_cen_potravin AS rust_cen_potravin,
-    rm.rust_mezd AS rust_mezd
+    vp.rok,
+    vp.vyvoj_potravin,
+    vm.vyvoj_mezd,
+    (vp.vyvoj_potravin - vm.vyvoj_mezd) AS rozdil,
+    CASE 
+        WHEN (vp.vyvoj_potravin - vm.vyvoj_mezd) > 10 THEN 'ANO'
+        ELSE 'NE'
+    END AS splnuje_podminku
 FROM 
-    hdp_rust AS h
+    vyvoj_potravin vp
 LEFT JOIN 
-    rust_potravin AS rp ON rp.rok = h.rok
-LEFT JOIN 
-    rust_mezd AS rm ON rm.rok = h.rok
-WHERE 
-    rp.rust_cen_potravin IS NOT NULL 
-    AND rm.rust_mezd IS NOT NULL
+    vyvoj_mezd vm ON vp.rok = vm.rok
 ORDER BY 
-    rok;
+    vp.rok;
