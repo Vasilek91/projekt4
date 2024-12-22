@@ -24,4 +24,4 @@ WHERE
             SELECT MAX(rok_potraviny)
             FROM t_petr_novotny_project_sql_primary_final
         ))
-    AND mzdy.odvetvi_mzdy LIKE 'republikový průměr';
+    AND mzdy.odvetvi_mzdy LIKE 'republikovy_prumer';
