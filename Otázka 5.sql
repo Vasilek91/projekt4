@@ -36,7 +36,7 @@ prumerne_mzdy AS (
         t_petr_novotny_project_sql_primary_final
     WHERE 
         typ_hodnoty = 'mzdy'
-        AND odvetvi_mzdy = 'republikový průměr'
+        AND odvetvi_mzdy = 'republikovy_prumer'
     GROUP BY 
         rok_mzdy
 ),
