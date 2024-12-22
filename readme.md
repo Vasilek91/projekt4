@@ -19,18 +19,18 @@ Projekt je postaven na přípravě SQL dotazů pro vytvoření tabulek, ze kter�
 Mzdy v České republice obecně dlouhodobě rostou. Například v odvětví "Administrativní a podpůrné činnosti" vzrostla průměrná mzda z **10 453,75 Kč v roce 2000** na **25 685,5 Kč v roce 2021**. V některých letech a odvětvích však došlo k poklesu, například v roce 2013 ve "Činnostech v oblasti nemovitostí" o **-401 Kč**.
 
 ### Otázka 2: Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období?
-- **Chléb konzumní kmínový**:
+**Chléb konzumní kmínový**:
   - V roce 2006: **1 211,91 kg** (cena: 16,12 Kč/kg, mzda: 19 536 Kč).
   - V roce 2018: **1 321,91 kg** (cena: 24,24 Kč/kg, mzda: 32 043 Kč).
 
-- **Mléko polotučné pasterované**:
+**Mléko polotučné pasterované**:
   - V roce 2006: **1 352,91 litrů** (cena: 14,44 Kč/litr).
   - V roce 2018: **1 616,7 litrů** (cena: 19,82 Kč/litr).
 
 Kupní síla chleba i mléka mezi těmito lety vzrostla.
 
 ### Otázka 3: Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší procentuální meziroční nárůst)?
-- **Cukr krystalový** má nejnižší průměrnou roční změnu ceny **-1,92 %**, což znamená, že jeho cena dlouhodobě klesala.
+Cukr krystalový** má nejnižší průměrnou roční změnu ceny **-1,92 %**, což znamená, že jeho cena dlouhodobě klesala.
 
 ### Otázka 4: Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 Žádný rok neukázal, že by nárůst cen potravin byl o více než 10 % vyšší než růst mezd. Největší rozdíl byl v roce 2012, kdy ceny potravin vzrostly o **6,73 %**, zatímco mzdy rostly o **2,50 %**.
