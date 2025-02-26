@@ -82,3 +82,6 @@ Růst HDP má slabou korelaci s růstem mezd a cen potravin. Například v roce 
   - Mzdy: 2000–2021.
   - Ceny potravin: 2006–2018. 
 - Transformace dat probíhala pouze na úrovni výsledných tabulek.
+
+##P.S.
+Ano, sql jsou česky, 7 let pracuju s německým ERP kde anlgičtina opravdu není primární jazyk a stejný počet let pracuji s jiným českým EPR kde angličtina taky není primární jazyk.
