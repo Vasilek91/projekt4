@@ -6,7 +6,7 @@ SELECT
     cpu.name AS jednotka_mzdy,
     cpc.name AS kalkulace_mzdy,
     CASE
-        WHEN cpib.name IS NULL THEN 'republikový průměr'
+        WHEN cpib.name IS NULL THEN 'republikovy_prumer'
         ELSE cpib.name
     END AS odvetvi_mzdy,
     cp.payroll_year AS rok_mzdy,
