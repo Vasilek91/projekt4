@@ -84,4 +84,4 @@ Růst HDP má slabou korelaci s růstem mezd a cen potravin. Například v roce 
 - Transformace dat probíhala pouze na úrovni výsledných tabulek.
 
 ##P.S.
-Ano, sql jsou česky, 7 let pracuju s německým ERP kde anlgičtina opravdu není primární jazyk a stejný počet let pracuji s jiným českým EPR kde angličtina taky není primární jazyk.
+###Ano, sql jsou česky, 7 let pracuju s německým ERP kde v databázi angličtina opravdu není primární jazyk a stejný počet let pracuji s jiným českým EPR kde v databázi angličtina taky není primární jazyk.
